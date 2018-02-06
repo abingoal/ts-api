@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { IUserInfo } from "../interface/users";
+import { MsgCode } from "../libs/msgcode";
 import dbUsers from "../service/users";
 
 /**
@@ -24,7 +25,7 @@ class Users {
     await dbUsers
       .userInfo()
       .then((data) => {
-        res.json(data);
+        res.json({ code: MsgCode.success, data });
       })
       .catch(next);
   }
