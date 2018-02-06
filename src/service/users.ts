@@ -1,5 +1,7 @@
+import * as debug from "debug";
+import db from "../database/mysql";
 import { IUserInfo } from "../interface/users";
-
+const debugLog = debug("api:users:db");
 /**
  * 用户信息 数据操作
  * 此为模拟数据
@@ -17,11 +19,9 @@ class Users {
    * @memberof Users
    */
   public static async userInfo<T>() {
-    const userInfo: IUserInfo = {
-      username: "abing",
-      nickname: "阿冰"
-    };
-    return userInfo;
+    return await db
+      .exec("select * from user where id=:id", { id: 1 })
+      .then((data: IUserInfo) => data);
   }
 }
 export default Users;
