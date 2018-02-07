@@ -7,7 +7,7 @@
     "object-literal-sort-keys": false,
     "no-require-imports": false,
     "no-var-requires": false,
-    "arrow-parens": true,
+    "arrow-parens": false,
     "member-ordering": false
   },
   "rulesDirectory": []
