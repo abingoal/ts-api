@@ -12,7 +12,10 @@ class UserRouter {
     this.init();
   }
   private init() {
-    this.router.get("/userinfo", users.userInfo);
+    this.router
+      .get("/userinfo", users.userInfo)
+      .get("/userlist", users.userList)
+      .post("/updatesomething", users.updateSomething);
   }
 }
 

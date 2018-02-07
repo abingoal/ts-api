@@ -61,7 +61,7 @@ class MySqlDB {
     this.config = Object.assign(mysqlConfig.poolConfig, this.config);
     this.pool = mysql.createPool(this.config);
 
-    mysql.createConnection(this.config).connect((err) => {
+    mysql.createConnection(this.config).connect(err => {
       if (err) {
         debugLog(err.message);
       }
@@ -102,10 +102,9 @@ class MySqlDB {
         conn.query(sqlStr, params, (error, results, fields) => {
           conn.release();
           if (error) {
-            reject({ err: error });
+            reject({ error: error.message });
             return;
           }
-          debugLog("o%", results);
           resolve(results);
         });
       });
