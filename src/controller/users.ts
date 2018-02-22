@@ -21,8 +21,8 @@ class Users {
    * @memberof Users
    */
   public static async userInfo(req: Request, res: Response, next: NextFunction) {
-    // const userid: number = parseInt(req.body.userid || 0, 10); // 如果使用application/json请求数据，使用该方法接收
-    const userid: number = parseInt(req.query.userid || 0, 10); // 使用普通的query方法接收参数
+    const userid: number = parseInt(req.body.userid || 0, 10); // 如果使用application/json请求数据，使用该方法接收
+    // const userid: number = parseInt(req.query.userid || 0, 10); // 使用普通的query方法接收参数
     if (userid === 0) {
       res.json({ code: msgCode.parmasError });
       return;
