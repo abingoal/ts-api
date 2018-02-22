@@ -78,7 +78,7 @@ class MySqlDB {
    * @returns
    * @memberof MySqlDB
    */
-  public static async exec(sqlStr: string, params?: object) {
+  public static exec(sqlStr: string, params?: object) {
     return new Promise((resolve, reject) => {
       if (!sqlStr) {
         reject({ err: "没有可执行的语句" });
