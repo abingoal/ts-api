@@ -1,4 +1,5 @@
 import * as bodyParser from "body-parser";
+import * as compression from "compression";
 import * as debug from "debug";
 import * as express from "express";
 import * as helmet from "helmet";
@@ -34,6 +35,7 @@ class App {
     });
     this.app.use(morgan("dev")); // 打印请求
     this.app.use(helmet()); // 设置Http头
+    this.app.use(compression()); // 压缩response
     this.app.use(bodyParser.json()); // 解析application/json
     this.app.use(bodyParser.urlencoded({ extended: false })); // 解析application/x-www-form-urlencode
     this.app.use(express.static(path.join(__dirname, "public"))); // 静态资源目录
