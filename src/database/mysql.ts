@@ -89,7 +89,7 @@ class MySqlDB {
           if (!values) {
             return query;
           }
-          return query.replace(
+          const sqlQuery = query.replace(
             /\:(\w+)/g,
             function(txt, key) {
               if (values.hasOwnProperty(key)) {
@@ -98,6 +98,8 @@ class MySqlDB {
               return txt;
             }.bind(this)
           );
+          debugLog(sqlQuery); // 打印执行的语句
+          return sqlQuery;
         };
         conn.query(sqlStr, params, (error, results, fields) => {
           conn.release();
@@ -105,6 +107,7 @@ class MySqlDB {
             reject({ error: error.message });
             return;
           }
+          debugLog("%o", results);
           resolve(results);
         });
       });
