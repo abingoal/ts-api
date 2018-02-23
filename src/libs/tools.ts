@@ -17,8 +17,11 @@ class Tools {
   public static handleResult(data): { code: msgCode; data?: any[] } {
     if (data) {
       if (Array.isArray(data)) {
-        if (data.length > 0) {
+        if (data.length > 1) {
           return { code: msgCode.success, data };
+        }
+        if (data.length === 1) {
+          return { code: msgCode.success, data: data.shift() };
         }
         return { code: msgCode.successWithoutData };
       } else {
