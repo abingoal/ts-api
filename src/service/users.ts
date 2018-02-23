@@ -23,7 +23,7 @@ class Users {
     // 使用普通语句
     return await db
       .exec("select * from user where id=:userid", parmas)
-      .then((data: IUserInfo[]) => data.shift()); // 此处需要自行判断是否需要只取一条数据
+      .then((data: IUserInfo[]) => data);
     // 使用存储过程
     // return await db.exec("call pro_api_userinfo(:userid)", parmas).then((data: IUserInfo) => data);
   }
