@@ -62,10 +62,7 @@ class MySqlDB {
     this.pool = mysql.createPool(this.config);
 
     mysql.createConnection(this.config).connect(err => {
-      if (err) {
-        debugLog(err.message);
-      }
-      debugLog("connection success");
+      debugLog(err ? err.message : "connection success");
     });
   }
   /**
