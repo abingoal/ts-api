@@ -28,7 +28,7 @@ class Users {
       return;
     }
     // 或者使用以下方式
-//     const { userid } = req.body || { userid: 0 };
+//     const { userid = 0 } = req.body;
 //     if(!userid) {
 //       res.json({ code: msgCode.parmasError });
 //       return;
