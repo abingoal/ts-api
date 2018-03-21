@@ -27,6 +27,12 @@ class Users {
       res.json({ code: msgCode.parmasError });
       return;
     }
+    // 或者使用以下方式
+//     const { userid } = req.body || { userid: 0 };
+//     if(!userid) {
+//       res.json({ code: msgCode.parmasError });
+//       return;
+//     }
     await dbUsers
       .userInfo({
         userid
