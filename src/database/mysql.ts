@@ -1,7 +1,67 @@
 import * as debug from "debug";
 import * as mysql from "mysql";
+
 const mysqlConfig = require("../configs/dbconfig/mysqlconfig.json");
 const debugLog = debug("api:mysql");
+
+interface INonQuery {
+  /**
+   * 字段数
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  fieldCount: number;
+  /**
+   * 影响行数
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  affectedRows: number;
+  /**
+   * 插入ID
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  insertId: number;
+  /**
+   * 服务器状态
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  serverStatus: number;
+  /**
+   * 警告数
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  warningCount: number;
+  /**
+   * 消息
+   *
+   * @type {string}
+   * @memberof INonQuery
+   */
+  message: string;
+  /**
+   * 协议
+   *
+   * @type {boolean}
+   * @memberof INonQuery
+   */
+  protocol41: boolean;
+  /**
+   * 改变行数
+   *
+   * @type {number}
+   * @memberof INonQuery
+   */
+  changedRows: number;
+}
 
 /**
  * 操作mysql数据库
@@ -38,15 +98,18 @@ class MySqlDB {
    */
   public pool: mysql.Pool;
   public static instance: MySqlDB = null;
+
   constructor() {
     this.init();
   }
+
   public static getInstance() {
     if (this.instance === null) {
       this.instance = new MySqlDB();
     }
     return this.instance;
   }
+
   /**
    * 初始化连接
    *
@@ -65,8 +128,9 @@ class MySqlDB {
       debugLog(err ? err.message : "connection success");
     });
   }
+
   /**
-   * 执行sql语句 由于项目中大部分都是以调用存储过程为主，因此不需要太复杂的数据库操作，如需更多功能
+   * 执行sql语句
    * 请参考[mysql官方文档](https://github.com/mysqljs/mysql)
    *
    * @static
@@ -75,7 +139,7 @@ class MySqlDB {
    * @returns
    * @memberof MySqlDB
    */
-  public static exec(sqlStr: string, params?: object) {
+  private static query(sqlStr: string, params?: object) {
     return new Promise((resolve, reject) => {
       if (!sqlStr) {
         reject({ err: "没有可执行的语句" });
@@ -104,12 +168,59 @@ class MySqlDB {
             reject({ error: error.message });
             return;
           }
-          debugLog("%o", results);
           resolve(results);
+          debugLog("%o", results);
+        });
+        conn.on("error", () => {
+          MySqlDB.getInstance().init();
         });
       });
     });
   }
+  /**
+   *  执行存储过程
+   * @param sqlStr 执行语句
+   * @param params 参数
+   */
+  public static exec(sqlStr: string, params?: object) {
+    return this.query(sqlStr, params).then((result: any) => {
+      if (result.length > 0) {
+        return result[0];
+      }
+    });
+  }
+  /**
+   * 执行查询SQL语句
+   *
+   * @static
+   * @param {string} sqlStr SQL语句
+   * @param {object} [params] 参数
+   * @returns
+   * @memberof MySqlDB
+   */
+  public static excuteQuery(sqlStr: string, params?: object) {
+    const lowerCaseSqlStr = sqlStr.toLocaleLowerCase();
+    if (
+      lowerCaseSqlStr.includes("insert") ||
+      lowerCaseSqlStr.includes("update") ||
+      lowerCaseSqlStr.includes("delete")
+    ) {
+      return this.excuteNonQuery(sqlStr, params);
+    }
+    return this.query(sqlStr, params);
+  }
+  /**
+   * 执行非查询SQL语句
+   * @param sqlStr 执行语句
+   * @param params 参数
+   */
+  public static excuteNonQuery(sqlStr: string, params?: object) {
+    if (sqlStr.toLocaleLowerCase().includes("select")) {
+      return this.query(sqlStr, params);
+    }
+    return this.query(sqlStr, params).then((result: INonQuery) => result);
+  }
 }
+
 MySqlDB.getInstance();
 export default MySqlDB;
