@@ -11,7 +11,8 @@
     "no-require-imports": false,
     "no-var-requires": false,
     "arrow-parens": false,
-    "member-ordering": false
+    "member-ordering": false,
+    "member-access": [true, "no-public"]
   },
   "rulesDirectory": []
 }

@@ -1,10 +1,6 @@
-import * as debug from "debug";
 import { NextFunction, Request, Response } from "express";
-import { IUserInfo } from "../interface/users";
 import msgCode from "../libs/msgcode";
-import tools from "../libs/tools";
 import dbUsers from "../service/users";
-const debugLog = debug("api:user:controller");
 
 /**
  * 用户相关控制类
@@ -20,25 +16,17 @@ class Users {
    * @param {Response} res 响应
    * @memberof Users
    */
-  public static async userInfo(req: Request, res: Response, next: NextFunction) {
-    const userid: number = +req.body.userid; // 如果使用application/json请求数据，使用该方法接收
-    // const userid: number = parseInt(req.query.userid || 0, 10); // 使用普通的query方法接收参数
+  static async userInfo(req: Request, res: Response, next: NextFunction) {
+    const { userid = 0 }: { userid: number } = req.query;
+
     if (isNaN(userid) || userid === 0) {
       res.json({ code: msgCode.parmasError });
       return;
     }
-    // 或者使用以下方式
-//     const { userid = 0 } = req.body;
-//     if(!userid) {
-//       res.json({ code: msgCode.parmasError });
-//       return;
-//     }
     await dbUsers
-      .userInfo({
-        userid
-      })
+      .userInfo(userid)
       .then(data => {
-        return res.json(tools.handleResult(data));
+        res.json(data);
       })
       .catch(err => {
         next(err);
@@ -53,16 +41,51 @@ class Users {
    * @param {NextFunction} next
    * @memberof Users
    */
-  public static async userList(req: Request, res: Response, next: NextFunction) {
+  static async userList(req: Request, res: Response, next: NextFunction) {
+    const { pageindex = 1, pagesize = 20 }: { pageindex: number; pagesize: number } = req.query;
     await dbUsers
-      .userList()
-      .then(data => res.json(tools.handleResult(data)))
+      .userList(pageindex, pagesize)
+      .then(result => {
+        const [data, count] = result;
+        res.json({ data, count });
+      })
       .catch(err => {
         next(err);
       });
   }
-  public static async updateSomething(req: Request, res: Response, next: NextFunction) {
-    await dbUsers.updateSomething().then(data => res.json(tools.handleResult(data)));
+  /**
+   * 添加用户
+   * @param req 请求
+   * @param res 相应
+   * @param next
+   */
+  static async addUser(req: Request, res: Response, next: NextFunction) {
+    const { firstName, lastName, age }: { firstName: string; lastName: string; age: number } = req.body;
+    if (!firstName || !lastName || !age) {
+      res.json({ code: msgCode.parmasError });
+      return;
+    }
+    const result = await dbUsers.addUser({
+      firstName,
+      lastName,
+      age
+    });
+    res.json(result);
+  }
+  /**
+   * 修改用户名字
+   * @param req 请求
+   * @param res 相应
+   * @param next
+   */
+  static async updateFirstName(req: Request, res: Response, next: NextFunction) {
+    const { firstName = "", id = 0 }: { firstName: string; id: number } = req.body;
+    if (isNaN(id) || !id) {
+      res.json({ code: msgCode.parmasError });
+      return;
+    }
+    const result = await dbUsers.updateFirstName(firstName, id);
+    res.json(result);
   }
 }
 

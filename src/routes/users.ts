@@ -7,15 +7,16 @@ import users from "../controller/users";
  * @class UserRouter
  */
 class UserRouter {
-  public router: Router = Router();
+  router: Router = Router();
   constructor() {
     this.init();
   }
   private init() {
     this.router
-      .post("/userinfo", users.userInfo)
+      .get("/userinfo", users.userInfo)
       .get("/userlist", users.userList)
-      .post("/updatesomething", users.updateSomething);
+      .post("/adduser", users.addUser)
+      .post("/updatefirstname", users.updateFirstName);
   }
 }
 

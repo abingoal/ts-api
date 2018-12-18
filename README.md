@@ -11,34 +11,3 @@
 MongoDB 的数据操作暂未加入。
 
 ### 项目结构
-
-```
-.
-├── README.md               // 说明文档
-├── package-lock.json
-├── package.json
-├── src
-│ ├── app.ts                // 初始化app
-│ ├── bin
-│ │ └── www.ts              // 入口文件
-│ ├── configs               // 配置文件
-│ │ └── dbconfig            // 数据库配置
-│ │ └── mysqlconfig.json    // mysql
-│ ├── controller            // 控制器
-│ │ └── users.ts
-│ ├── database              // 数据库操作
-│ │ ├── mongodb.ts
-│ │ └── mysql.ts
-│ ├── interface             // 接口
-│ │ └── users.ts
-│ ├── libs                  // 一些实用类库
-│ │ └── msgcode.ts
-│ ├── routes                // 路由
-│ │ ├── base.ts
-│ │ └── users.ts
-│ └── service               // 数据处理
-│ └── users.ts
-├── test                    // 单元测试
-├── tsconfig.json           // typescript编译配置
-└── tslint.json             // typescript代码质量检测配置
-```

@@ -7,7 +7,7 @@ import userRouter from "../routes/users";
  * @class BaseRouter
  */
 class BaseRouter {
-  public router: Router = Router();
+  router: Router = Router();
   constructor() {
     this.init();
   }

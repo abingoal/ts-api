@@ -1,0 +1,25 @@
+{
+  "type": "mysql",
+  "host": "127.0.0.1",
+  "port": 3306,
+  "username": "root",
+  "password": "abing123",
+  "database": "test",
+  "synchronize": true,
+  "logging": true,
+  "entities": ["src/models/**/*.ts"],
+  "migrations": ["src/migration/**/*.ts"],
+  "subscribers": ["src/subscriber/**/*.ts"],
+  "cli": {
+    "entitiesDir": "src/models",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  },
+  "cache": {
+    "type": "redis",
+    "options": {
+      "host": "localhost",
+      "port": 6379
+    }
+  }
+}

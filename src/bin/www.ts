@@ -1,63 +1,68 @@
 import * as debug from "debug";
+import * as fs from "fs";
 import * as http from "http";
+import * as https from "https";
+import * as path from "path";
+import * as typeorm from "typeorm";
 import app from "../app";
 
-const debugLog = debug("api:*");
+import { protocol } from "../configs/common/settings.json";
 
-const port = normalizePort(process.env.PORT || 3000);
-const server = http.createServer(app);
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+const debugLog = debug("api:server");
 
-/**
- * 标准化端口号
- *
- * @param {(number | string)} val 端口为字符或数字
- * @returns {(number | string | boolean)} 返回 数字|字符|布尔类型
- */
-function normalizePort(val: number | string): number | string | boolean {
-  const normalizeport: number =
-    typeof val === "string" ? parseInt(val, 10) : val;
-  if (isNaN(normalizeport)) {
-    return val;
-  } else if (normalizeport > 0) {
-    return normalizeport;
-  } else {
-    return false;
-  }
-}
-/**
- * 创建服务监听
- *
- */
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
-  debugLog(`Listening on ${bind}`);
-}
-/**
- * 创建服务错误处理
- *
- * @param {NodeJS.ErrnoException} error
- */
-function onError(error: NodeJS.ErrnoException) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-  const bind = typeof port === "string" ? `pipe ${port}` : `port ${port}`;
-  switch (error.code) {
-    case "EACCES":
-      // tslint:disable-next-line:no-console
-      console.log(`${bind}需要权限`);
+function createHttpServer() {
+  const httpPort = parseInt(process.env.HTTPPORT || "80", 10);
+  const httpServer = http.createServer(app);
+  httpServer
+    .on("listening", () => {
+      debugLog(`listening on port ${httpPort}`);
+    })
+    .on("error", err => {
+      debugLog(err.message);
       process.exit(1);
-      break;
-    case "EADDRINUSE":
-      // tslint:disable-next-line:no-console
-      console.log(`${bind}已经在使用中`);
+    })
+    .listen(httpPort);
+}
+function createHttpsServer() {
+  const httpsPort = parseInt(process.env.HTTPSPORT || "443", 10);
+  const certOptions = {
+    key: fs.readFileSync(path.resolve("src/keys/server.key")),
+    cert: fs.readFileSync(path.resolve("src/keys/server.crt"))
+  };
+  const httpsServer = https.createServer(certOptions, app);
+  httpsServer
+    .on("listening", () => {
+      debugLog(`listening on port ${httpsPort}`);
+    })
+    .on("error", err => {
+      debugLog(err.message);
       process.exit(1);
+    })
+    .listen(httpsPort);
+}
+(function createOrmServer() {
+  typeorm
+    .createConnection()
+    .then(() => {
+      debug("api:orm")(`connect to mysql orm success`);
+    })
+    .catch(err => {
+      throw err;
+    });
+})();
+const protocols = ["httpOnly", "httpsOnly", "all"];
+if (protocol && protocols.includes(protocol)) {
+  switch (protocol) {
+    case "httpOnly":
+      createHttpServer();
       break;
+    case "httpsOnly":
+      createHttpsServer();
+      break;
+    case "all":
     default:
-      throw error;
+      createHttpServer();
+      createHttpsServer();
+      break;
   }
 }

@@ -1,37 +1,56 @@
-import * as debug from "debug";
-import db from "../database/mysql";
-import { IUserInfo } from "../interface/users";
-const debugLog = debug("api:users:service");
+import { getConnection } from "typeorm";
+import { User } from "../models/users";
+
 /**
  * 用户信息 数据操作
- * 此为模拟数据
- * 实际项目中可使用mangoDB或者mysql
  *
  * @class Users
  */
 class Users {
   /**
-   * 获取用户信息
-   *
-   * @static
-   * @template T 泛型
-   * @param {{ userid: number }} parmas 参数
-   * @returns
-   * @memberof Users
+   * 获取单个用户信息
+   * @param id 用户id
    */
-  public static async userInfo<T>(parmas: { userid: number }) {
-    // 使用普通语句
-    return await db
-      .exec("select * from user where id=:userid", parmas)
-      .then((data: IUserInfo[]) => data);
-    // 使用存储过程
-    // return await db.exec("call pro_api_userinfo(:userid)", parmas).then((data: IUserInfo) => data);
+  static async userInfo(id: number) {
+    const userModel = getConnection().getRepository(User);
+    return await userModel.findOne({ id });
   }
-  public static async userList<T>() {
-    return await db.exec("select * from user limit 10").then((data: IUserInfo[]) => data);
+  /**
+   * 获取用户列表
+   * @param pageindex 页码
+   * @param pagesize 每页数据数量
+   */
+  static async userList(pageindex: number, pagesize: number) {
+    const userModel = getConnection().getRepository(User);
+    return await userModel
+      .createQueryBuilder()
+      .orderBy("id", "DESC")
+      .skip((pageindex - 1) * pagesize)
+      .take(pagesize)
+      .getManyAndCount();
   }
-  public static async updateSomething() {
-    return { code: 123 };
+  /**
+   * 更新用户某项信息
+   * @param firstName 更新的字段名
+   * @param id 用户ID
+   */
+  static async updateFirstName(firstName: string, id: number) {
+    const userModel = getConnection().getRepository(User);
+    const userToUpdate = await userModel.findOne({ id });
+    userToUpdate.firstName = firstName;
+    return await userModel.save(userToUpdate);
+  }
+  /**
+   * 添加一条新记录
+   * @param params 参数
+   */
+  static async addUser(params: { firstName: string; lastName: string; age: number }) {
+    const userModel = getConnection().getRepository(User);
+    const addUser = new User();
+    addUser.firstName = params.firstName;
+    addUser.lastName = params.lastName;
+    addUser.age = params.age;
+    return await userModel.manager.save(addUser);
   }
 }
 export default Users;
