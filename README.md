@@ -29,6 +29,4 @@
     ├── routes        // 路由器
     ├── service       // 数据操作
     └── subscriber    // TypeORM - 订阅者
-
-521 directories
 ```
