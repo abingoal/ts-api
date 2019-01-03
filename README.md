@@ -12,23 +12,23 @@
 
 ```bash
 .
-├── dist // 构建后文件夹
+├── dist              // 构建后文件夹
 └── src
-    ├── bin // 主执行目录
-    ├── configs // 配置文件
-    │   ├── common // 通用
-    │   └── dbconfig // 数据库
-    ├── controller // 控制器
-    ├── database // 数据库支持
-    ├── entity  // TypeORM - 实体
-    ├── interface // 接口
-    ├── keys // 秘钥
-    ├── libs // 类库
-    ├── middleware // 中间件
-    ├── migration // TypeORM - 数据迁移
-    ├── routes // 路由器
-    ├── service // 数据操作
-    └── subscriber // TypeORM - 订阅者
+    ├── bin           // 主执行目录
+    ├── configs       // 配置文件
+    │   ├── common    // 通用
+    │   └── dbconfig  // 数据库
+    ├── controller    // 控制器
+    ├── database      // 数据库支持
+    ├── entity        // TypeORM - 实体
+    ├── interface     // 接口
+    ├── keys          // 秘钥
+    ├── libs          // 类库
+    ├── middleware    // 中间件
+    ├── migration     // TypeORM - 数据迁移
+    ├── routes        // 路由器
+    ├── service       // 数据操作
+    └── subscriber    // TypeORM - 订阅者
 
 521 directories
 ```
