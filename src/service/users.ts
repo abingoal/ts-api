@@ -1,5 +1,5 @@
-import { getConnection } from "typeorm";
-import { User } from "../models/users";
+import { getConnection, Repository } from "typeorm";
+import { User } from "../entity/users";
 
 /**
  * 用户信息 数据操作
@@ -50,7 +50,7 @@ class Users {
     addUser.firstName = params.firstName;
     addUser.lastName = params.lastName;
     addUser.age = params.age;
-    return await userModel.manager.save(addUser);
+    return await userModel.save(addUser);
   }
 }
 export default Users;

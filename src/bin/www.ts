@@ -40,7 +40,7 @@ function createHttpsServer() {
     })
     .listen(httpsPort);
 }
-(function createOrmServer() {
+(() => {
   typeorm
     .createConnection()
     .then(() => {
