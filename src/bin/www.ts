@@ -23,6 +23,7 @@ function createHttpServer() {
     })
     .listen(httpPort);
 }
+
 function createHttpsServer() {
   const httpsPort = parseInt(process.env.HTTPSPORT || "443", 10);
   const certOptions = {
@@ -40,7 +41,8 @@ function createHttpsServer() {
     })
     .listen(httpsPort);
 }
-(() => {
+
+function createOrmConn() {
   typeorm
     .createConnection()
     .then(() => {
@@ -49,20 +51,7 @@ function createHttpsServer() {
     .catch(err => {
       throw err;
     });
-})();
-const protocols = ["httpOnly", "httpsOnly", "all"];
-if (protocol && protocols.includes(protocol)) {
-  switch (protocol) {
-    case "httpOnly":
-      createHttpServer();
-      break;
-    case "httpsOnly":
-      createHttpsServer();
-      break;
-    case "all":
-    default:
-      createHttpServer();
-      createHttpsServer();
-      break;
-  }
 }
+
+protocol === "http" ? createHttpServer() : protocol === "https" ? createHttpsServer() : createHttpServer();
+createOrmConn();
