@@ -4,6 +4,10 @@ const chalk = require("chalk");
 
 const needCopy = ["ecosystem.config.js", "package.json", "ormconfig.json"];
 
+if (!fs.existsSync("dist")) {
+  fs.mkdirSync("dist");
+}
+
 needCopy.map(n => {
   //--> dist/${n}`
   console.log(
