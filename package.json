@@ -7,7 +7,8 @@
     "start": "node bin/www.js",
     "build": "tsc & node build.js",
     "dev": "NODE_ENV=development DEBUG=api:* ts-node src/bin/www.ts",
-    "log": "NODE_ENV=development DEBUG=api:* npm start"
+    "log": "NODE_ENV=development DEBUG=api:* npm start",
+    "clean": "rimraf dist/*"
   },
   "author": "abingoal",
   "license": "MIT",
@@ -30,6 +31,7 @@
     "@types/mysql": "^2.15.5",
     "chalk": "^2.4.1",
     "debug": "^4.1.1",
+    "rimraf": "^2.6.3",
     "typescript": "^3.2.2"
   }
 }
